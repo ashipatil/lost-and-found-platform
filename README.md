@@ -1,5 +1,12 @@
 # 🧳 Lost and Found Platform
 
+**Author:** Ashi Patil  
+📧 Email: [patilashi028@gmail.com](mailto:patilashi028@gmail.com)  
+💼 LinkedIn: [linkedin.com/in/ashipatil1807](https://linkedin.com/in/ashipatil1807)  
+💻 GitHub: [github.com/ashipatil](https://github.com/ashipatil)
+
+---
+
 A **secure and efficient Lost & Found management system** built using **Java, Spring Boot, MySQL, Thymeleaf, and Bootstrap**.  
 This platform helps users report lost items, manage claims, and allows admins to monitor and approve them — all with strong authentication and email alerts.
 
@@ -11,7 +18,7 @@ This platform helps users report lost items, manage claims, and allows admins to
 - 🔒 **User Authentication & Role-Based Access** – Secure login for users and admins  
 - 📬 **Email Notifications** – Alerts for registration, claim approval/rejection, and status updates  
 - ⚙️ **Claim Management** – Submit and review item claims with admin moderation  
-- 💳 **Promotional Payment Integration** – Optional paid feature to promote lost item reports via posters, social media, TV, etc.  
+- 💳 **Promotional Payment Integration** – Optional paid feature to promote lost item reports via posters, social media, and TV  
 - 📊 **Admin Dashboard Analytics** – Real-time stats for users, items, and claims using Thymeleaf  
 - 🧠 **Secure Backend** – Spring Security + well-structured queries for data integrity  
 
@@ -52,3 +59,10 @@ This platform helps users report lost items, manage claims, and allows admins to
    Use Run As → Spring Boot App or execute: mvn spring-boot:run
 
 5. Open http://localhost:8080 in browser
+
+💬 Contact
+If you have any questions, feel free to reach out!
+Ashi Patil
+📧 patilashi028@gmail.com
+💼 linkedin.com/in/ashipatil1807
+💻 github.com/ashipatil
