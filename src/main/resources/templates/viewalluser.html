@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin-Dashboard | User management</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --edit-color: #4facfe;
+            --edit-hover: #00f2fe;
+            --card-border: rgba(255, 255, 255, 0.1);
+            --text-color: #ffffff;
+            --background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            --glass: rgba(255, 255, 255, 0.08);
+            --glass-hover: rgba(255, 255, 255, 0.15);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            min-height: 100vh;
+            color: var(--text-color);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+         .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--glass);
+    padding: 20px 32px;
+    border-radius: 16px;
+    margin: 32px;
+    backdrop-filter: blur(12px);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--card-border);
+  }
+
+  .header-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-color);
+  }
+
+  .home-icon {
+    height: 60px;
+    width: 90px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+
+  .home-icon:hover {
+    transform: scale(1.06);
+  }
+
+        .controls-panel {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            border-radius: 2rem;
+            padding: 2.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .search-filters {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 2.5rem;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            max-width: 500px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 1rem 1.25rem 1rem 3.5rem;
+            border: 2px solid transparent;
+            border-radius: 1.5rem;
+            font-size: 1.1rem;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow);
+            color: var(--text-color);
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--edit-color);
+            background: var(--glass-hover);
+            box-shadow: 
+                0 10px 25px -3px rgba(79, 172, 254, 0.3),
+                0 4px 6px -2px rgba(79, 172, 254, 0.1);
+        }
+
+        .search-box input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.1rem;
+        }
+
+        .search-box input:focus + i {
+            color: var(--edit-color);
+        }
+
+        .filters {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .filter-select {
+            padding: 1rem 1.25rem;
+            border: 2px solid transparent;
+            border-radius: 1.5rem;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            color: var(--text-color);
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--edit-color);
+            background: var(--glass-hover);
+            box-shadow: 
+                0 10px 25px -3px rgba(79, 172, 254, 0.3),
+                0 4px 6px -2px rgba(79, 172, 254, 0.1);
+        }
+
+        .filter-select option {
+            background: #2c5364;
+            color: var(--text-color);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            padding-top: 2.5rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--glass);
+            border-radius: 1.5rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+            box-shadow: var(--shadow);
+            width:145px;
+        }
+
+        .stat-item:hover {
+            background: var(--glass-hover);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: var(--success);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: var(--text-color);
+            font-size: 1rem;
+            font-weight: 500;
+            opacity: 0.8;
+        }
+
+        .table-container {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border-radius: 2rem;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--card-border);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table thead {
+            background: var(--glass-hover);
+        }
+
+        .table th {
+            padding: 2rem 1.5rem;
+            text-align: left;
+            font-weight: 700;
+            color: var(--text-color);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .table tbody tr {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .table tbody tr:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+        }
+
+        .table td {
+            padding: 1.5rem;
+            vertical-align: middle;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .avatar {
+            width: 3.5rem;
+            height: 3.5rem;
+            border-radius: 50%;
+            background: var(--success);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 0 8px 25px rgba(79, 172, 254, 0.3);
+        }
+
+        .user-details h4 {
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.25rem;
+            font-size: 1.1rem;
+        }
+
+        .user-email {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-color);
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border: 2px solid;
+            backdrop-filter: blur(10px);
+        }
+
+        .badge-admin {
+            background: linear-gradient(135deg, rgba(79, 172, 254, 0.2) 0%, rgba(0, 242, 254, 0.1) 100%);
+            color: var(--edit-color);
+            border-color: var(--card-border);
+        }
+
+        .badge-moderator {
+            background: linear-gradient(135deg, rgba(79, 172, 254, 0.15) 0%, rgba(0, 242, 254, 0.1) 100%);
+            color: var(--edit-hover);
+            border-color: var(--card-border);
+        }
+
+        .badge-user {
+            background: var(--glass);
+            color: var(--text-color);
+            border-color: var(--card-border);
+            opacity: 0.8;
+        }
+
+        .badge-active {
+            background: linear-gradient(135deg, rgba(79, 172, 254, 0.2) 0%, rgba(0, 242, 254, 0.1) 100%);
+            color: var(--edit-hover);
+            border-color: var(--card-border);
+        }
+
+        .badge-inactive {
+            background: var(--glass);
+            color: var(--text-color);
+            border-color: var(--card-border);
+            opacity: 0.6;
+        }
+
+        .badge-suspended {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(239, 68, 68, 0.1) 100%);
+            color: #ef4444;
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-color);
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Action Links Styling */
+        .actions-container {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .action-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1rem;
+            border-radius: 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-decoration: none;
+            border: 2px solid;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            text-transform: capitalize;
+            letter-spacing: 0.025em;
+            min-width: 70px;
+        }
+
+        .action-link.edit {
+            background: #059669;
+            border-color: rgba(16, 185, 129, 0.5);
+            color: white;
+        }
+
+        .action-link.edit:hover {
+            background: white;
+            border-color: rgba(16, 185, 129, 0.5);
+            color: #059669;
+        }
+
+        .action-link.delete {
+            background: #dc2626;
+            color: white;
+            border-color: rgba(239, 68, 68);
+        }
+
+        .action-link.delete:hover {
+            background:white;
+            border-color: rgba(239, 68, 68);
+            color: #dc2626;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #6b7280;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            color: #d1d5db;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #374151;
+        }
+
+        
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .search-filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                max-width: none;
+            }
+
+            .filters {
+                flex-direction: column;
+            }
+
+            .table-container {
+                overflow-x: auto;
+            }
+
+            .table {
+                min-width: 900px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .actions-container {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .action-link {
+                min-width: 60px;
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+  
+    <!-- Page Heading -->
+    <div class="header">
+    <div class="header-title">All Claim Reports</div>
+    <a th:href="@{/dash/admindashboard}">
+      <img src="https://preview.redd.it/5lzdqhgbc3d81.png?width=1080&crop=smart&auto=webp&s=ba3add550b768382e39f834649c97d8aee87fda9" alt="Home" class="home-icon">
+    </a>
+  </div>
+<div class="container">
+    
+
+    <!-- Users Table -->
+    <div class="table-container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th><i class="fa-solid fa-user"></i> Name</th>
+            <th><i class="fa-solid fa-lock"></i> Password</th>
+            <th><i class="fa-solid fa-user-shield"></i> Role</th>
+            <th><i class="fa-solid fa-envelope"></i> Email</th>
+            <th style="text-align: right;"><i class="fa-solid fa-gears"></i> Actions</th>
+          </tr>
+        </thead>
+        <tbody id="userTableBody" th:each="user : ${user}">
+          <tr>
+            <td th:text="${user.name}"></td>
+            <td th:text="${user.password}"></td>
+            <td>
+              <span class="badge badge-user" th:text="${user.role}"></span>
+            </td>
+            <td>
+              <span class="info-item">
+                
+                <span th:text="${user.email}"></span>
+              </span>
+            </td>
+            <td>
+              <div class="actions-container">
+                <a th:href="@{'/dash/adminuseredit/' + ${user.id}}" class="action-link edit">Track User</a>
+                <!-- Optional delete button -->
+                <!-- <a href="#" class="action-link delete">Delete</a> -->
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+
+</html>

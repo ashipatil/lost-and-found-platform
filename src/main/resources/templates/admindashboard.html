@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard - Lost & Found</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    :root {
+      --primary: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+      --users: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+      --reports: linear-gradient(135deg, #ffb347 0%, #ffcc33 100%);
+      --danger: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+      --plan: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --bg-primary: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      --glass: rgba(255, 255, 255, 0.08);
+      --glass-hover: rgba(255, 255, 255, 0.15);
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      --shadow-hover: 0 20px 50px rgba(0, 0, 0, 0.3);
+      --border: rgba(255, 255, 255, 0.2);
+      --border-hover: rgba(255, 255, 255, 0.4);
+    }
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: white;
+      min-height: 100vh;
+    }
+
+    /* Scrollbar Styling */
+    body::-webkit-scrollbar {
+      width: 10px;
+    }
+    body::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    body::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+    }
+
+    header {
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2rem;
+      margin: 40px auto;
+      width: 90%;
+      box-shadow: var(--shadow);
+    }
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .welcome-section h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      background: linear-gradient(to right, #ffffff, #dddddd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .dropdown-menu {
+      cursor: pointer;
+      margin-top: 10px;
+      background: #2e3b46;
+      border-radius: 12px;
+      border: 1px solid var(--border-hover);
+      padding: 0.5rem;
+      min-width: 170px;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+    }
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 15px;
+      font-size: 15px;
+      color: #dcdcdc;
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+    .dropdown-item:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .dropdown-menu .text-danger {
+      color: #ff6b6b !important;
+    }
+    .btn-outline-light:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-color: var(--border-hover);
+    }
+
+    /* Logout Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(2px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+    .modal-overlay.show {
+      display: flex;
+      opacity: 1;
+    }
+    .modal-content {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-hover);
+      padding: 2rem 3rem;
+      border-radius: 16px;
+      text-align: center;
+      color: white;
+      box-shadow: var(--shadow-hover);
+      width: fit-content;
+    }
+    .modal-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .btn-logout, .btn-cancel {
+      padding: 0.6rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-logout {
+      background: var(--danger);
+      color: white;
+    }
+    .btn-cancel {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      color: white;
+    }
+
+    .actions-grid {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 4rem auto;
+      gap: 2rem;
+    }
+    .row-wrapper {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    @media (max-width: 768px) {
+      .row-wrapper {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+    .action-card {
+      width: 360px;
+      height: 205px;
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2rem;
+      text-align: center;
+      color: white;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .action-icon {
+      font-size: 2.8rem;
+      margin-bottom: 0.8rem;
+    }
+    .action-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    .action-card:hover,
+    .active-card {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: var(--shadow-hover);
+      border-color: var(--border-hover);
+    }
+    .items-card { background: var(--primary); }
+    .users-card { background: var(--users); }
+    .reports-card { background: var(--reports); }
+    .status-card { background: var(--danger); }
+    .plan-card { background: var(--plan); }
+
+    .stats-panel {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2rem;
+      max-width: 1250px;
+      margin: 0 auto 3rem;
+      box-shadow: var(--shadow);
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+    .stat-card {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+      background: var(--glass-hover);
+    }
+    .stat-number {
+      font-size: 2.8rem;
+      font-weight: 800;
+    }
+    .stat-label {
+      font-size: 1.1rem;
+      margin-top: 0.5rem;
+      opacity: 0.9;
+    }
+    .stats-panel h3 {
+      font-size: 2.6rem;
+      font-weight: 800;
+      text-align: center;
+      color: #00e5ff;
+      text-shadow: 0 0 8px rgba(0, 229, 255, 0.8);
+    }
+    .stats-panel h3::before {
+      content: "\f080";
+      font-family: 'Font Awesome 6 Free';
+      font-weight: 900;
+      font-size: 1.8rem;
+      margin-right: 0.5rem;
+    }
+    .stats-panel h5 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin: 2.5rem 0 1.5rem;
+      color: #ffffff;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      font-weight: 300;
+      border-top: 1px solid var(--border);
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <div class="container-fluid">
+    <header>
+      <div class="header-content">
+        <div class="welcome-section">
+          <h1>Welcome, Admin</h1>
+          <p>Monitor and manage the entire Lost & Found system with comprehensive controls.</p>
+        </div>
+        <div class="header-actions">
+          <div class="dropdown position-relative">
+            <button class="btn btn-outline-light dropdown-toggle" id="profileDropdown" aria-expanded="false" aria-haspopup="true" onclick="toggleDropdown()">
+              <i class="fa-solid fa-user-circle me-2"></i> Admin
+            </button>
+            <div id="dropdownMenu" class="dropdown-menu dropdown-menu-dark">
+              <a class="dropdown-item"><i class="fa-solid fa-id-badge"></i> Profile</a>
+              <a class="dropdown-item text-danger" onclick="showLogoutModal()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="actions-grid">
+        <div class="row-wrapper">
+          <a th:href="@{/dash/adminviewallitem}" class="action-card items-card"><div class="action-icon">📦</div><div class="action-title">Items Management</div></a>
+          <a th:href="@{/dash/viewalluser}" class="action-card users-card"><div class="action-icon">👥</div><div class="action-title">Users Management</div></a>
+          <a th:href="@{/dash/viewallclaimreports}" class="action-card reports-card"><div class="action-icon">📄</div><div class="action-title">Claim Reports</div></a>
+        </div>
+        <div class="row-wrapper">
+          <a th:href="@{/dash/adminstatusmanage}" class="action-card status-card"><div class="action-icon">📊</div><div class="action-title">Status Management</div></a>
+          <a th:href="@{/dash/adminplanmanage}" class="action-card plan-card"><div class="action-icon">🧭</div><div class="action-title">Promotional Plan</div></a>
+        </div>
+      </section>
+    </main>
+
+    <section class="overview-grid">
+  <div class="stats-panel">
+    <h3>Platform Analytics</h3>
+
+    <h5>👥 User Overview</h5>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number" th:text="${totalUser}" style="color:#00c6ff;">0</div>
+        <div class="stat-label">Total Users</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" th:text="${totalAdmin}" style="color:#ff6f00;">0</div>
+        <div class="stat-label">Total Admins</div>
+      </div>
+    </div>
+
+    <h5>📦 Item & Report Stats</h5>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number" th:text="${totalItems}" style="color:#1abc9c;">0</div>
+        <div class="stat-label">Total Items</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" th:text="${totalLost}" style="color:#ff3e4d;">0</div>
+        <div class="stat-label">Lost Reports</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" th:text="${totalFound}" style="color:#9cff2e;">0</div>
+        <div class="stat-label">Found Reports</div>
+      </div>
+    </div>
+
+    <h5>✅ Claims Summary</h5>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number" th:text="${totalClaims}" style="color:#00e5ff;">0</div>
+        <div class="stat-label">Total Claims</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" th:text="${approvedClaims}" style="color:#2ecc71;">0</div>
+        <div class="stat-label">Approved</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" th:text="${rejectedClaims}" style="color:#e84393;">0</div>
+        <div class="stat-label">Rejected</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" th:text="${pendingClaims}" style="color:#f1c40f;">0</div>
+        <div class="stat-label">Pending</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+    <div id="logoutOverlay" class="modal-overlay" role="dialog">
+      <div class="modal-content">
+        <p>Are you sure you want to logout?</p>
+        <div class="modal-buttons">
+          <button class="btn-logout" onclick="confirmLogout()">Yes, Logout</button>
+          <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>&copy; 2025 Lost & Found Admin Portal. All rights reserved. | 🔐 Secure Admin Access | 📞 admin@lostandfound.com</p>
+    </footer>
+  </div>
+
+  <script>
+    function showLogoutModal() {
+      const modal = document.getElementById('logoutOverlay');
+      modal.classList.add('show');
+    }
+    function closeModal() {
+      const modal = document.getElementById('logoutOverlay');
+      modal.classList.remove('show');
+      setTimeout(() => modal.style.display = 'none', 300);
+    }
+    function confirmLogout() {
+      window.location.href = "/dash/logout";
+    }
+    function toggleDropdown() {
+      document.getElementById('dropdownMenu').classList.toggle('show');
+    }
+    document.addEventListener('click', function(event) {
+      const menu = document.getElementById('dropdownMenu');
+      const button = document.getElementById('profileDropdown');
+      if (!button.contains(event.target) && !menu.contains(event.target)) {
+        menu.classList.remove('show');
+      }
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+      const loggedIn = sessionStorage.getItem('justLoggedIn');
+      if (loggedIn) {
+        sessionStorage.removeItem('justLoggedIn');
+        Swal.fire({
+          icon: 'success',
+          title: 'Login Successful!',
+          toast: true,
+          position: 'top',
+          background: 'linear-gradient(135deg, #1abc9c, #16a085)',
+          color: '#fff',
+          iconColor: '#fff',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer);
+            toast.addEventListener('mouseleave', Swal.resumeTimer);
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

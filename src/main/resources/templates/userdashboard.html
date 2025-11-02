@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Dashboard - Lost & Found</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <style>
+    :root {
+      --primary: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+      --secondary: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
+      --accent: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+      --success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      --warning: linear-gradient(135deg, #ffb347 0%, #ffcc33 100%);
+      --danger: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+      --logout: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --dark: #0c1f24;
+      --light: #ffffff;
+      --glass: rgba(255, 255, 255, 0.08);
+      --glass-hover: rgba(255, 255, 255, 0.15);
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      --shadow-hover: 0 20px 50px rgba(0, 0, 0, 0.2);
+      --border: rgba(255, 255, 255, 0.2);
+      --border-hover: rgba(255, 255, 255, 0.4);
+      --text-light: rgba(255, 255, 255, 0.9);
+      --bg-primary: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      --bg-card: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+      --glow: 0 0 20px rgba(116, 235, 213, 0.3);
+      --glow-hover: 0 0 30px rgba(0, 198, 255, 0.5);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: white;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+     
+      z-index: -1;
+    }
+
+    .container-fluid {
+      padding: 2.2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    header {
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-top: 1rem;
+      margin-bottom: 4.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 2rem;
+    }
+
+    .welcome-section {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .welcome-section h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      background: linear-gradient(45deg, #fff, #f0f0f0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+    }
+
+    .welcome-section p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      font-weight: 300;
+      margin-bottom: 1rem;
+      line-height: 1.4;
+    }
+
+    .user-stats {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .stat-item {
+      background: var(--glass);
+      padding: 0.5rem 1rem;
+      border-radius: 15px;
+      font-size: 0.9rem;
+      border: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .search-container {
+      position: relative;
+    }
+
+    
+    .logout-btn {
+      background: linear-gradient(135deg, #232526, #414345);
+      border: none;
+      border-radius: 50px;
+      padding: 1rem 2rem;
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+    .btn {
+      text-decoration: none;
+    }
+    
+
+    .logout-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+      color: white;
+    }
+
+    main {
+      margin-bottom: 3rem;
+    }
+
+    .actions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-bottom: 4rem;
+    }
+
+    .action-card {
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2rem;
+      text-align: center;
+      color: white;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+      text-decoration: none;
+      display: block;
+      height: 250px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .action-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transition: left 0.5s;
+    }
+
+    .action-card:hover::before {
+      left: 100%;
+    }
+
+    .action-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      color: white;
+    }
+
+    .action-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .action-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .action-desc {
+      font-size: 0.95rem;
+      opacity: 0.8;
+      font-weight: 300;
+      line-height: 1.4;
+    }
+
+    .report-card { background: var(--warning); }
+    .view-card { background: var(--success); }
+    .my-reports-card { background: var(--logout); }
+    .status-card { background: var(--danger); }
+
+    .overview-section {
+      margin-bottom: 3rem;
+    }
+
+    .overview-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      justify-items: center;
+    }
+
+    .stats-panel {
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2rem;
+      width: 100%;
+    }
+
+    .stats-panel h3 {
+      font-size: 2.5rem;
+      font-weight: 400;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .stat-card {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      padding: 1rem;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      font-size: 1.2rem;
+      opacity: 0.8;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      opacity: 0.8;
+      font-weight: 300;
+      border-top: 1px solid var(--border);
+      margin-top: 3rem;
+    }
+
+    footer p {
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 1024px) {
+      .actions-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      }
+      
+      .stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container-fluid {
+        padding: 1rem;
+      }
+
+      .header-content {
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+      }
+
+      .welcome-section {
+        text-align: center;
+      }
+
+      .welcome-section h1 {
+        font-size: 2.5rem;
+      }
+
+      .header-actions {
+        justify-content: center;
+        width: 100%;
+      }
+
+      .search-input {
+        width: 100%;
+        max-width: 300px;
+      }
+
+      .actions-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      .action-card {
+        height: auto;
+        min-height: 220px;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .user-stats {
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .welcome-section h1 {
+        font-size: 2rem;
+      }
+      
+      .welcome-section p {
+        font-size: 1rem;
+      }
+      
+      .header-actions {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .logout-btn {
+        padding: 0.8rem 1.5rem;
+      }
+    }
+    .modal {
+  display: none;
+  position: fixed;
+  z-index: 10000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  justify-content: center;
+  align-items: center;
+  font-family: 'Inter', sans-serif;
+}
+
+.modal-content {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-hover);
+  padding: 2rem 3rem;
+  border-radius: 16px;
+  text-align: center;
+  color: var(--text-light);
+  box-shadow: var(--shadow-hover);
+  max-width: 400px;
+  width: 100%;
+}
+
+.modal-content p {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.modal-buttons .btn-logout,
+.modal-buttons .btn-cancel {
+  padding: 0.6rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.modal-buttons .btn-logout {
+  background: var(--danger);
+  color: #fff;
+}
+
+.modal-buttons .btn-logout:hover {
+  background: #ff3b4a;
+}
+
+.modal-buttons .btn-cancel {
+  background: var(--glass-hover);
+  color: white;
+  border: 1px solid var(--border);
+}
+
+.modal-buttons .btn-cancel:hover {
+  background: var(--glass);
+}
+   @keyframes slideDown {
+    from {
+      transform: translateY(-30px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+</head>
+<body>
+  <div class="container-fluid">
+    <header>
+      <div class="header-content">
+        <div class="welcome-section">
+          <h1>Welcome Back,<span th:text = "${user.name}"></span>!</h1>
+          <p>Manage your lost and found reports with ease and efficiency.</p>
+        </div>
+        <div class="header-actions">
+          
+          <a th:href="@{/dash/priorreqdetails}" class="btn"><button class="logout-btn">Prior Request</button></a>
+          <button class="logout-btn" onclick="showLogoutModal()">Logout</button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="actions-grid" aria-label="User dashboard actions">
+        <a th:href="@{/dash/reportitem}" class="action-card report-card">
+          <div class="action-icon">📝</div>
+          <div class="action-title">Report Item</div>
+          <div class="action-desc">Submit a detailed report for your lost or found item with photos, location, and detailed description to increase recovery chances.</div>
+        </a>
+        <a th:href="@{/dash/userviewallitem}" class="action-card view-card">
+          <div class="action-icon">🔍</div>
+          <div class="action-title">View all Items</div>
+          <div class="action-desc">See through all reported found items with advanced filtering by category, location, date, and keywords.</div>
+        </a>
+        <a th:href="@{/dash/myreports}" class="action-card my-reports-card">
+          <div class="action-icon">📄</div>
+          <div class="action-title">My Reports</div>
+          <div class="action-desc">View, edit, and manage all your submitted reports. Track status updates and communicate with finders.</div>
+        </a>
+        <a th:href="@{/dash/statusmanage}" class="action-card status-card">
+          <div class="action-icon">📊</div>
+          <div class="action-title">Track Status</div>
+          <div class="action-desc">Monitor real-time progress of your reports, view match notifications, and get detailed status updates.</div>
+        </a>
+
+
+      </section>
+    </main>
+
+    <!-- Logout Confirmation Modal -->
+<div id="logoutModal" class="modal">
+  <div class="modal-content">
+    <p>Are you sure you want to logout?</p>
+    <div class="modal-buttons">
+      <button class="btn-logout" onclick="confirmLogout()">Yes, Logout</button>
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+    
+
+    <footer>
+      <p>&copy; 2025 Lost & Found Hub. All rights reserved. | 🌟 Helping reunite people with their belongings since 2020</p>
+    </footer>
+  </div>
+  <script>
+  function showLogoutModal() {
+    document.getElementById('logoutModal').style.display = 'flex';
+  }
+
+  function closeModal() {
+    document.getElementById('logoutModal').style.display = 'none';
+  }
+
+  function confirmLogout() {
+    // Redirect or trigger logout
+    window.location.href = "/dash/logout"; // ✅ Set to your logout URL
+  }
+
+  // Optional: Close modal if clicked outside the modal-content
+  window.onclick = function(event) {
+    const modal = document.getElementById('logoutModal');
+    if (event.target === modal) {
+      closeModal();
+    }
+  };
+  document.addEventListener('DOMContentLoaded', function () {
+	    const loggedIn = sessionStorage.getItem('justLoggedIn');
+
+	    if (loggedIn) {
+	      sessionStorage.removeItem('justLoggedIn');
+
+	      Swal.fire({
+	        icon: 'success',
+	        title: 'Login Successful!',
+	        toast: true,
+	        position: 'top',
+	        background: 'linear-gradient(135deg, #1abc9c, #16a085)',
+	        color: '#fff',
+	        iconColor: '#fff',
+	        showConfirmButton: false,
+	        timer: 3000,
+	        timerProgressBar: true,
+	        didOpen: (toast) => {
+	          toast.addEventListener('mouseenter', Swal.stopTimer)
+	          toast.addEventListener('mouseleave', Swal.resumeTimer)
+	        }
+	      });
+	    }
+	  });
+</script>
+  
+</body>
+</html>

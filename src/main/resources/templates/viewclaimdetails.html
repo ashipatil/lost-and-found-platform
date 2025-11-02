@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Claim Report - Admin Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --blue: #4facfe;
+      --cyan: #00f2fe;
+      --green: #38ef7d;
+      --red: #e74c3c;
+      --gray-dark: #1e1e2f;
+      --glass: rgba(255, 255, 255, 0.08);
+      --glass-hover: rgba(255, 255, 255, 0.15);
+      --text-color: #ffffff;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: var(--text-color);
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 30px;
+    }
+
+    .header {
+      margin: 35px;
+      margin-bottom: 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--glass);
+      padding: 20px 30px;
+      border-radius: 14px;
+      border: 1px solid var(--glass-hover);
+      backdrop-filter: blur(10px);
+    }
+
+    .header h1 {
+      font-size: 2rem;
+      margin: 0;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    
+
+    .home-icon {
+      height: 60px;
+      width: 90px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+
+    .home-icon:hover {
+      transform: scale(1.06);
+    }
+
+    .status-banner {
+      display: inline-block;
+      padding: 16px 30px;
+      border-radius: 12px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .status-approved {
+      background-color: rgba(46, 204, 113, 0.2);
+      color: #2ecc71;
+      border: 1.5px solid #2ecc71;
+    }
+
+    .status-rejected {
+      background-color: rgba(231, 76, 60, 0.2);
+      color: #e74c3c;
+      border: 1.5px solid #e74c3c;
+    }
+
+    .claim-card {
+      background: var(--glass);
+      border-radius: 18px;
+      padding: 36px;
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 24px;
+      margin-bottom: 30px;
+    }
+
+    .section {
+      background: var(--glass-hover);
+      border-left: 5px solid var(--blue);
+      border-radius: 14px;
+      padding: 20px;
+    }
+
+    .section h4 {
+      margin-top: 0;
+      margin-bottom: 14px;
+      font-size: 1.2rem;
+    }
+
+    .section p {
+      margin: 6px 0;
+      font-size: 1rem;
+    }
+
+    .section strong {
+      color: #eee;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 12px 26px;
+      border: none;
+      border-radius: 30px;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: fit-content;
+    }
+
+    .btn-approve {
+      background: #2ecc71;
+      color: white;
+    }
+
+    .btn-reject {
+      background: #e74c3c;
+      color: white;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .header-actions {
+        justify-content: center;
+        margin-top: 10px;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <h1>Claim Report Details</h1>
+  <div class="header-actions"> 
+  <a th:href="@{/dash/viewallclaimreports}">
+    <img src="https://preview.redd.it/5lzdqhgbc3d81.png?width=1080&crop=smart&auto=webp&s=ba3add550b768382e39f834649c97d8aee87fda9" alt="Home" class="home-icon" />
+   </a>
+  </div>
+</div>
+
+<!-- Container -->
+<div class="container">
+
+  <!-- Claim Details -->
+  <div class="claim-card">
+		<!-- Status -->
+  <div style="text-align: center;" th:switch="${claim.claimstatus}">
+    <div class="status-banner status-approved" th:case="'Approved'">✅ This claim has been Approved</div>
+    <div class="status-banner status-rejected" th:case="'Rejected'">❌ This claim has been Rejected</div>
+  </div>
+    <!-- Grid 1 -->
+    <div class="grid">
+      <div class="section">
+        <h4>📦 Item Info</h4>
+        <p><strong>Name:</strong> <span th:text="${claim.itemName}"></span></p>
+        <p><strong>Category:</strong> <span th:text="${claim.category}"></span></p>
+        <p><strong>Date Lost/Found:</strong> <span th:text="${claim.item.dateLostFound}"></span></p>
+        <p><strong>Location:</strong> <span th:text="${claim.item.location}"></span></p>
+        <p><strong>Description:</strong> <span th:text="${claim.item.description}"></span></p>
+      </div>
+
+      <div class="section">
+        <h4>🙋 Claimant Info</h4>
+        <p><strong>Name:</strong> <span th:text="${claim.name}"></span></p>
+        <p><strong>Email:</strong> <span th:text="${claim.email}"></span></p>
+        <p><strong>Phone:</strong> <span th:text="${claim.phone}"></span></p>
+        <p><strong>Date Lost/Found:</strong> <span th:text="${claim.dateLost}"></span></p>
+        <p><strong>Location:</strong> <span th:text="${claim.location}"></span></p>
+      </div>
+    </div>
+
+    <!-- Grid 2 -->
+    <div class="grid">
+      <div class="section">
+        <h4>🛡️ Verification Details</h4>
+        <p><strong>Proof:</strong></p>
+        <p th:text="${claim.proof}"></p>
+      </div>
+
+      <div class="section">
+        <h4>🕵️ Reported By</h4>
+        <p><strong>Reporter:</strong> <span th:text="${claim.item.user.name}"></span></p>
+        <p><strong>Email:</strong> <span th:text="${claim.item.user.email}"></span></p>
+        <p><strong>Phone:</strong> <span th:text="${claim.item.contactPhone}"></span></p>
+      </div>
+    </div>
+
+    <!-- Approve/Reject Buttons -->
+    <div class="action-buttons" th:if="${claim.claimstatus == 'Pending'}">
+      <form th:action="@{'/dash/claimapprove/' + ${claim.id}}" method="post">
+        <button type="submit" class="btn btn-approve">Approve</button>
+      </form>
+      <form th:action="@{'/dash/claimreject/' + ${claim.id}}" method="post">
+        <button type="submit" class="btn btn-reject">Reject</button>
+      </form>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

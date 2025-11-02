@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Reported Item</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+
+  <style>
+    :root {
+      --success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      --edit-color: #4facfe;
+      --edit-hover: #00f2fe;
+      --card-border: rgba(255, 255, 255, 0.1);
+      --text-color: #ffffff;
+      --background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      --glass: rgba(255, 255, 255, 0.08);
+      --glass-hover: rgba(255, 255, 255, 0.15);
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: var(--background);
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--glass);
+      padding: 20px 32px;
+      border-radius: 16px;
+      margin: 30px auto 20px;
+      width: 90%;
+      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--card-border);
+    }
+
+    .header-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-color);
+    }
+
+    .home-icon {
+      height: 60px;
+      width: 90px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .home-icon:hover {
+      transform: scale(1.06);
+      box-shadow: 0 0 12px rgba(0, 242, 254, 0.4);
+    }
+
+    .card-section {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 80px;
+      margin: 20px auto 40px;
+    }
+
+    .image-box {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .image-box img {
+      max-height: 360px;
+      border-radius: 16px;
+      background: white;
+      padding: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+      transition: transform 0.3s ease;
+    }
+
+    .image-box img:hover {
+      transform: scale(1.03);
+    }
+
+    .claim-btn {
+      margin-top: 25px;
+      padding: 12px 30px;
+      background: var(--success);
+      color: black;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.3s ease-in-out;
+      box-shadow: 0 6px 20px rgba(0, 242, 254, 0.3);
+    }
+
+    .claim-btn:hover {
+      transform: scale(1.05);
+      background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+    }
+
+    .info-box {
+      flex: 1;
+      width: 750px; 
+      background: var(--glass);
+      border-radius: 16px;
+      padding: 30px;
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .info-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      gap: 10px;
+    }
+
+    .info-header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--edit-hover);
+    }
+
+    .badge {
+      background: #ff5e5e;
+      color: white;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 0.95rem;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .info-row {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .info-row label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--edit-color);
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .info-row span,
+    .info-row p {
+      font-size: 1rem;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 10px 14px;
+      border-radius: 8px;
+      color: var(--text-color);
+    }
+
+    .description-full {
+      grid-column: span 2;
+    }
+
+    footer {
+      margin-top: auto;
+      padding: 20px;
+      text-align: center;
+      color: var(--text-color);
+      background: var(--glass);
+      border-top: 1px solid var(--card-border);
+      backdrop-filter: blur(8px);
+    }
+
+    @media (max-width: 768px) {
+      .card-section {
+        flex-direction: column;
+        gap: 30px;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .image-box img {
+        max-height: 240px;
+      }
+
+      .info-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .claim-btn {
+        width: 80%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ✅ Header -->
+  <div class="header">
+    <div class="header-title">Item Details</div>
+    <a th:href="@{/dash/userviewallitem}">
+      <img src="https://preview.redd.it/5lzdqhgbc3d81.png?width=1080&crop=smart&auto=webp&s=ba3add550b768382e39f834649c97d8aee87fda9"
+           alt="Home" class="home-icon">
+    </a>
+  </div>
+
+  <!-- ✨ Content Section -->
+  <div class="card-section">
+
+    <!-- Image with Claim Button -->
+    <div class="image-box">
+      <img th:src="'data:image/jpeg;base64,' + ${item.itemPhotoPath}" alt="Item Image">
+      <a th:if="${item.itemstatus != 'Claimed'}"
+   th:href="@{/dash/claimitem/{id}(id=${item.id})}"
+   class="claim-btn">
+   Claim Now
+</a>
+
+    </div>
+
+    <!-- Info Box -->
+    <div class="info-box">
+      <div class="info-header">
+        <h1 th:text="${item.itemName}">Item Name</h1>
+        <span class="badge" th:text="${item.itemstatus}">Not Claimed</span>
+      </div>
+
+      <hr style="border-color: var(--glass-hover); margin-bottom: 20px;"/>
+
+      <div class="info-grid">
+        <div class="info-row">
+          <label><i class="fa-solid fa-flag"></i> Report Type</label>
+          <span th:text="${item.reportType}">Found</span>
+        </div>
+
+        <div class="info-row">
+          <label><i class="fa-solid fa-tags"></i> Category</label>
+          <span th:text="${item.category}">Others</span>
+        </div>
+
+        <div class="info-row">
+          <label><i class="fa-solid fa-location-dot"></i> Location</label>
+          <span th:text="${item.location}">Lower Parel</span>
+        </div>
+
+        <div class="info-row">
+          <label><i class="fa-solid fa-calendar-days"></i> Date</label>
+          <span th:text="${item.dateLostFound}">2025-06-10</span>
+        </div>
+
+        <div class="info-row description-full">
+          <label><i class="fa-solid fa-file-lines"></i> Description</label>
+          <p th:text="${item.description}">Description goes here...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</body>
+</html>

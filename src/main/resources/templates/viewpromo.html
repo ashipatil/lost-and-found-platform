@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Lost Item Promo Poster</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --primary-color: #6BBF59;
+      --secondary-color: #e0e0e0;
+      --highlight-color: #FF914D;
+      --bg-primary: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      --text-color: #333333;
+      --glow-color: #6BBF59;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      min-height: 100vh;
+      animation: backgroundShift 15s ease-in-out infinite;
+    }
+
+    @keyframes backgroundShift {
+      0%, 100% { background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); }
+      50% { background: linear-gradient(135deg, #1a252f, #2c4854, #37637a); }
+    }
+
+    .flyer {
+      width: 100%;
+      max-width: 800px;
+      background: white;
+      border-radius: 25px;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 100px rgba(107, 191, 89, 0.4);
+      overflow: hidden;
+      border: 6px solid;
+      position: relative;
+      animation: cardFloat 8s ease-in-out infinite;
+    }
+
+    @keyframes cardFloat {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-8px) scale(1.01); }
+    }
+
+    .flyer::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: conic-gradient(from 0deg, var(--primary-color), var(--highlight-color), #ff6b6b, var(--primary-color));
+      z-index: -1;
+      border-radius: 25px;
+      animation: borderGlow 12s linear infinite;
+    }
+
+    @keyframes borderGlow {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .flyer-header {
+      position: relative;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      height: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .flyer-header img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.9;
+      transition: all 0.4s ease;
+    }
+
+    .flyer-header:hover img {
+      transform: scale(1.05);
+      opacity: 1;
+    }
+
+    .flyer-header::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, rgba(0,0,0,0.2), transparent, rgba(0,0,0,0.2));
+      pointer-events: none;
+    }
+
+    .alert-ribbon {
+      position: absolute;
+      top: 20px;
+      left: -30px;
+      background: linear-gradient(45deg, #ff4757, #ff6b7a);
+      color: white;
+      padding: 8px 50px;
+      font-weight: 900;
+      font-size: 0.9rem;
+      transform: rotate(-45deg);
+      z-index: 30;
+      box-shadow: 0 4px 15px rgba(255, 71, 87, 0.5);
+      animation: ribbonPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes ribbonPulse {
+      0%, 100% { transform: rotate(-45deg) scale(1); }
+      50% { transform: rotate(-45deg) scale(1.05); }
+    }
+
+    .flyer-title {
+      position: absolute;
+      bottom: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(45deg, var(--primary-color), #8fd977);
+      color: white;
+      padding: 12px 30px;
+      border-radius: 50px;
+      font-weight: 800;
+      font-size: 1.6rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      animation: titleGlow 4s ease-in-out infinite;
+      z-index: 20;
+      box-shadow: 0 8px 25px rgba(107, 191, 89, 0.5);
+    }
+
+    @keyframes titleGlow {
+      0%, 100% { 
+        box-shadow: 0 8px 25px rgba(107, 191, 89, 0.5);
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      }
+      50% { 
+        box-shadow: 0 12px 35px rgba(107, 191, 89, 0.7), 0 0 30px rgba(107, 191, 89, 0.9);
+        text-shadow: 0 0 20px rgba(255, 255, 255, 0.9);
+      }
+    }
+
+    .flyer-body {
+      padding: 2rem 2.5rem;
+      background: linear-gradient(to bottom, #ffffff, #f8fafc);
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .urgent-banner {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 1rem;
+      background: linear-gradient(45deg, #ff4757, #ff6b7a);
+      color: white;
+      border-radius: 15px;
+      font-size: 1.4rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      animation: urgentShake 2s ease-in-out infinite;
+      box-shadow: 0 8px 25px rgba(255, 71, 87, 0.4);
+      margin-bottom: 1rem;
+    }
+
+    @keyframes urgentShake {
+      0%, 100% { transform: translateX(0px); }
+      25% { transform: translateX(-2px); }
+      75% { transform: translateX(2px); }
+    }
+
+    .info-section {
+      background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+      border-radius: 20px;
+      padding: 1.5rem;
+      border-left: 6px solid var(--primary-color);
+      animation: slideInLeft 1s ease-out;
+    }
+
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .description-section {
+      background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+      border-radius: 20px;
+      padding: 1.5rem;
+      border-left: 6px solid var(--highlight-color);
+      animation: slideInRight 1s ease-out;
+    }
+
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--highlight-color);
+      margin-bottom: 1rem;
+      position: relative;
+      padding-bottom: 0.5rem;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 40px;
+      height: 3px;
+      background: linear-gradient(45deg, var(--highlight-color), #ff7675);
+      border-radius: 2px;
+      animation: lineExpand 2s ease-out;
+    }
+
+    @keyframes lineExpand {
+      from { width: 0; }
+      to { width: 40px; }
+    }
+
+    .info-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .info-tag {
+      background: linear-gradient(45deg, var(--highlight-color), #ff7675);
+      padding: 8px 16px;
+      border-radius: 25px;
+      color: white;
+      font-weight: 700;
+      font-size: 0.85rem;
+      box-shadow: 0 4px 12px rgba(255, 145, 77, 0.3);
+      animation: tagBounce 2s ease-in-out infinite;
+      transition: all 0.3s ease;
+    }
+
+    .info-tag:hover {
+      transform: translateY(-2px) scale(1.05);
+    }
+
+    .info-tag:nth-child(1) { animation-delay: 0s; }
+    .info-tag:nth-child(2) { animation-delay: 0.2s; }
+    .info-tag:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes tagBounce {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-3px); }
+    }
+
+    .description-text {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: #2d3748;
+      margin-top: 1rem;
+    }
+
+    .cta-section {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+      border-radius: 20px;
+      padding: 1.5rem;
+      text-align: center;
+      border-left: 6px solid #2196f3;
+      animation: ctaGlow 3s ease-in-out infinite;
+      margin-top: 1rem;
+    }
+
+    @keyframes ctaGlow {
+      0%, 100% { box-shadow: 0 8px 25px rgba(33, 150, 243, 0.2); }
+      50% { box-shadow: 0 12px 35px rgba(33, 150, 243, 0.4); }
+    }
+
+    .thank-you {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 1.5rem;
+      background: linear-gradient(135deg, #f1f8e9, #dcedc8);
+      border-radius: 20px;
+      border-left: 6px solid var(--primary-color);
+      animation: heartBeat 4s ease-in-out infinite;
+    }
+
+    @keyframes heartBeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      padding: 1.5rem;
+      background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    }
+
+    .action-btn {
+      background: linear-gradient(45deg, var(--primary-color), #8fd977);
+      color: white;
+      padding: 12px 30px;
+      border-radius: 50px;
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 1rem;
+      box-shadow: 0 8px 25px rgba(107, 191, 89, 0.3);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .action-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      transition: left 0.6s ease;
+    }
+
+    .action-btn:hover::before {
+      left: 100%;
+    }
+
+    .action-btn:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 15px 35px rgba(107, 191, 89, 0.4);
+    }
+
+    .flyer-footer {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #666;
+      padding: 1rem;
+      background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+      
+    }
+
+    .flyer-footer a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    .flyer-footer a:hover {
+      color: var(--highlight-color);
+    }
+
+    /* Decorative Elements */
+    .decoration {
+      position: absolute;
+      pointer-events: none;
+      color: rgba(107, 191, 89, 0.1);
+      font-size: 4rem;
+      animation: decorateFloat 8s ease-in-out infinite;
+    }
+
+    .decoration:nth-child(1) { top: 15%; right: 10%; animation-delay: 0s; }
+    .decoration:nth-child(2) { bottom: 20%; left: 8%; animation-delay: 3s; }
+
+    @keyframes decorateFloat {
+      0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.1; }
+      50% { transform: translateY(-15px) rotate(10deg); opacity: 0.2; }
+    }
+
+    @media print {
+      body {
+        background: white !important;
+        padding: 0;
+        animation: none;
+      }
+      .flyer {
+        box-shadow: 0 0 10px rgba(0,0,0,0.1) !important;
+       
+        animation: none;
+        max-width: 100%;
+        margin: 0;
+      }
+      .flyer::before {
+        display: none;
+      }
+      .button-group {
+        display: none;
+      }
+      .decoration {
+        display: none;
+      }
+      * {
+        animation: none !important;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .content-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      .flyer {
+        margin: 1rem;
+      }
+      .flyer-body {
+        padding: 1.5rem;
+      }
+      .button-group {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .flyer-header {
+        height: 250px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Decorative Elements -->
+<div class="decoration">🔍</div>
+<div class="decoration">📋</div>
+
+<div class="flyer">
+  <div class="alert-ribbon">URGENT</div>
+
+  <!-- Header -->
+  <div class="flyer-header">
+    <img th:if="${promo.itemPhotoPath != null}" 
+         th:src="'data:image/jpeg;base64,' + ${promo.itemPhotoPath}" 
+         alt="Lost Item Image">
+    <div th:if="${promo.itemPhotoPath == null}" 
+         class="w-full h-full flex items-center justify-center text-white text-2xl font-semibold z-10">
+      📷 No Image Available
+    </div>
+    <div class="flyer-title" th:text="${promo.itemName}">Lost Item</div>
+  </div>
+
+  <!-- Body -->
+  <div class="flyer-body">
+    <div class="urgent-banner">🚨 LOST ITEM ALERT 🚨</div>
+
+    <div class="content-grid">
+      <!-- Item Info -->
+      <div class="info-section">
+        <div class="section-title">📦 Item Details</div>
+        <div class="info-tags">
+          <div class="info-tag" th:text="'📁 ' + ${promo.category}">📁 Electronics</div>
+          <div class="info-tag" th:text="'📅 ' + ${promo.dateLostFound}">📅 Jan 15, 2025</div>
+          <div class="info-tag" th:text="'📍 ' + ${promo.location}">📍 Central Park</div>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="description-section">
+        <div class="section-title">📝 Description</div>
+        <div class="description-text" th:text="${promo.description}">
+          Description will go here.
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="cta-section">
+        <p class="font-bold text-lg text-blue-800 mb-2">💡 Seen This Item?</p>
+        <p class="text-blue-700">Contact the owner immediately! Share this poster to help reunite this item with its owner.</p>
+      </div>
+
+      <!-- Thank You -->
+      <div class="thank-you">
+        <p class="text-lg font-bold text-gray-800">🙏 Thank You for Your Help!</p>
+        <p class="text-gray-600 text-sm mt-1">Every share makes a difference</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Buttons -->
+  <div class="button-group">
+    <button id="backToDashboardBtn" class="action-btn">🏠 Back to Dashboard</button>
+  </div>
+
+  <!-- Footer -->
+  <div class="flyer-footer">
+    <p>&copy; 2025 Lost & Found Hub | 📧 
+      <a href="mailto:lostandfoundofficials@gmail.com">lostandfoundofficials@gmail.com</a>
+    </p>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- SweetAlert Logic -->
+<script>
+
+
+  document.getElementById("backToDashboardBtn").addEventListener("click", function () {
+    Swal.fire({
+      title: "Have you reported this item on the website?",
+      showDenyButton: true,
+      confirmButtonText: "Yes, Back to Dashboard",
+      denyButtonText: "No, Report Item",
+      confirmButtonColor: "#6BBF59",
+      denyButtonColor: "#ff4757",
+      background: "#f5f5f5"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = "/dash/userdashboard";
+      } else if (result.isDenied) {
+        window.location.href = "/dash/reportitem";
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

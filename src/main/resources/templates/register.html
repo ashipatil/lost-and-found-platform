@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Register - Lost & Found</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+      --secondary: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
+      --accent: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+      --success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      --warning: linear-gradient(135deg, #ffb347 0%, #ffcc33 100%);
+      --danger: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+      --dark: #0c1f24;
+      --light: #ffffff;
+      --glass: rgba(255, 255, 255, 0.08);
+      --glass-hover: rgba(255, 255, 255, 0.15);
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      --shadow-hover: 0 20px 50px rgba(0, 0, 0, 0.2);
+      --border: rgba(255, 255, 255, 0.2);
+      --border-hover: rgba(255, 255, 255, 0.4);
+      --text-light: rgba(255, 255, 255, 0.9);
+      --bg-primary: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      --input-bg: rgba(255, 255, 255, 0.05);
+      --input-border: rgba(255, 255, 255, 0.15);
+      --input-focus: rgba(0, 198, 255, 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: var(--light);
+      line-height: 1.6;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 80%, rgba(26, 188, 156, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(0, 198, 255, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(116, 235, 213, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 60% 70%, rgba(255, 65, 108, 0.1) 0%, transparent 50%);
+      z-index: -1;
+    }
+
+    .floating-element {
+      position: absolute;
+      font-size: 1.8rem;
+      opacity: 0.12;
+      filter: blur(0.5px);
+      z-index: 1;
+    }
+
+    .floating-element:hover {
+      transform: none;
+      opacity: 0.3;
+      filter: blur(0px);
+    }
+
+    .float-1 { top: 10%; left: 5%; }
+    .float-2 { top: 70%; right: 8%; }
+    .float-3 { top: 30%; right: 20%; }
+    .float-4 { bottom: 20%; left: 10%; }
+    .float-5 { top: 50%; left: 85%; }
+
+    .login-container {
+      background: var(--glass);
+      backdrop-filter: blur(25px);
+      border: 1px solid var(--border);
+      border-radius: 25px;
+      padding: 3rem;
+      width: 100%;
+      max-width: 450px;
+      box-shadow: var(--shadow);
+      position: relative;
+      z-index: 10;
+      margin: 2rem;
+    }
+
+    .login-container:hover {
+      transform: none;
+      box-shadow: var(--shadow-hover);
+      border-color: var(--border-hover);
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .logo {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--text-light);
+    }
+
+    .login-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-top: 0.5rem;
+    }
+
+    .login-subtitle {
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      color: var(--light);
+      outline: none;
+      transition: border 0.3s;
+    }
+
+    .form-input:focus {
+      border-color: var(--input-focus);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 0.75rem;
+      background: var(--accent);
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: white;
+      cursor: pointer;
+      margin-top: 1rem;
+      transition: background 0.3s;
+    }
+
+    .login-btn:hover {
+      background: var(--success);
+    }
+
+    .register-link {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.95rem;
+    }
+
+    .register-link a {
+      color: #88f7ff;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .register-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Elements -->
+  <div class="floating-element float-1">📝</div>
+  <div class="floating-element float-2">🧾</div>
+  <div class="floating-element float-3">🔐</div>
+  <div class="floating-element float-4">🌟</div>
+  <div class="floating-element float-5">👥</div>
+
+  <!-- Register Container -->
+  <div class="login-container">
+    <div class="login-header">
+      <div class="logo">Lost & Found</div>
+      <h1 class="login-title">Create Account</h1>
+      <p class="login-subtitle">Join the community and start reporting or finding items</p>
+    </div>
+
+    <form class="login-form" th:action="@{/landing/register}" method="POST" id="registerForm">
+      <div class="form-group">
+        <label for="name" class="form-label">Full Name</label>
+        <input type="text" id="name" name="name" class="form-input" placeholder="Enter your full name" required>
+      </div>
+
+      <div class="form-group">
+        <label for="email" class="form-label">Email Address</label>
+        <input type="email" id="email" name="email" class="form-input" placeholder="Enter your email" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" id="password" name="password" class="form-input" placeholder="Create a password" required>
+      </div>
+
+      <button type="submit" class="login-btn" onClick="sendEmailNotification()">Register</button>
+    </form>
+
+    <div class="register-link">
+      Already have an account? <a href="/landing/login">Sign in here</a>
+    </div>
+  </div>
+	<script>
+	const sendEmailNotification = () => {
+        const email = document.querySelector('input[name="email"]').value;
+       
+        fetch('http://localhost:8080/landing/register', {
+	        method: 'POST',
+	        headers: {
+	        	'Content-Type': 'application/json',
+	        },
+	        body: JSON.stringify({ email: email })
+        })
+        .then((response) => {
+	        if (response.ok) {
+	        console.log('Email sent successfully');
+	        } else {
+	        console.error('Failed to send email');
+	        }
+        })
+        .catch((error) => {
+        	console.error('Error sending email:', error);
+        });
+    };
+	</script>
+</body>
+</html>

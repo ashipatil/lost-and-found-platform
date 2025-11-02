@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claim Reports - Admin Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --glass: rgba(255, 255, 255, 0.08);
+      --glass-hover: rgba(255, 255, 255, 0.15);
+      --text-color: #ffffff;
+      --success: #2ecc71;
+      --danger: #e74c3c;
+      --warning: #f39c12;
+      --primary: #4facfe;
+    }
+    
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: var(--text-color);
+      margin: 0;
+      padding: 0;
+      display: flex;
+     flex-direction: column;
+    }
+    html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+
+    .container {
+      width: 80%; 
+      margin: 20px auto;
+      padding: 20px;
+      flex: 1;
+    }
+
+     .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--glass);
+    padding: 20px 32px;
+    border-radius: 16px;
+    margin: 32px;
+    backdrop-filter: blur(12px);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--card-border);
+  }
+
+  .header-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-color);
+  }
+
+  .home-icon {
+    height: 60px;
+    width: 90px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+
+  .home-icon:hover {
+    transform: scale(1.06);
+  }
+
+
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      gap: 20px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .stat-box {
+      background: var(--glass);
+      padding: 20px;
+      border-radius: 14px;
+      text-align: center;
+      flex: 1;
+      min-width: 200px;
+      border: 1px solid var(--glass-hover);
+    }
+
+    .stat-box h2 {
+      margin: 0;
+      font-size: 2rem;
+      color: var(--primary);
+    }
+
+    .stat-box p {
+      margin: 10px 0 0;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+    }
+
+    .table-container {
+      background: var(--glass);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--glass-hover);
+      backdrop-filter: blur(10px);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 16px 20px;
+      text-align: left;
+    }
+
+    th {
+      background: var(--glass-hover);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+    }
+
+    tr {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    tr:hover {
+      background-color: rgba(255, 255, 255, 0.03);
+    }
+
+    .status-badge {
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      display: inline-block;
+      text-align: center;
+    }
+
+    .status-approved {
+      background-color: rgba(46, 204, 113, 0.15);
+      color: var(--success);
+    }
+
+    .status-rejected {
+      background-color: rgba(231, 76, 60, 0.15);
+      color: var(--danger);
+    }
+
+    .status-pending {
+      background-color: rgba(243, 156, 18, 0.15);
+      color: var(--warning);
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .action-link {
+      padding: 8px 16px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: 0.2s ease-in-out;
+      border: 1px solid transparent;
+      display: inline-block;
+      text-align: center;
+    }
+
+    .view-btn {
+      background: var(--primary);
+      color: white;
+    }
+
+    .view-btn:hover {
+      background: transparent;
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .delete-btn {
+      background: var(--danger);
+      color: white;
+    }
+
+    .delete-btn:hover {
+      background: transparent;
+      color: var(--danger);
+      border-color: var(--danger);
+    }
+
+    @media (max-width: 768px) {
+      .stats {
+        flex-direction: column;
+      }
+
+      .action-buttons {
+        justify-content: center;
+      }
+
+      th, td {
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="header-title">All Claim Reports</div>
+    <a th:href="@{/dash/admindashboard}">
+      <img src="https://preview.redd.it/5lzdqhgbc3d81.png?width=1080&crop=smart&auto=webp&s=ba3add550b768382e39f834649c97d8aee87fda9" alt="Home" class="home-icon">
+    </a>
+  </div>
+<div class="container">
+
+  <!-- If claims exist -->
+  <div th:if="${claim.size() > 0}">
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat-box">
+        <h2 th:text="${claim.size()}">0</h2>
+        <p>Total Claims</p>
+      </div>
+      <div class="stat-box">
+        <h2 th:text="${approvedCount}">0</h2>
+        <p>Approved</p>
+      </div>
+      <div class="stat-box">
+        <h2 th:text="${rejectedCount}">0</h2>
+        <p>Rejected</p>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Item Name</th>
+            <th>Type</th>
+            <th>Category</th>
+            <th>Status</th>
+            <th style="text-align: right;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="c : ${claim}">
+            <td th:text="${c.id}">1</td>
+            <td th:text="${c.itemName}">Phone</td>
+            <td th:text="${c.item.reportType}">Lost</td>
+            <td th:text="${c.category}">Electronics</td>
+            <td>
+              <span th:text="${c.claimstatus}"
+                    th:classappend="'status-badge ' + 
+                        (${c.claimstatus} == 'Approved' ? 'status-approved' : 
+                        (${c.claimstatus} == 'Rejected' ? 'status-rejected' : 'status-pending'))">
+                Pending
+              </span>
+            </td>
+            <td>
+              <div class="action-buttons">
+                <a th:href="@{/dash/viewclaimdetails/{id}(id=${c.id})}" class="action-link view-btn">View</a>
+                <a th:href="@{/dash/deleteclaimreport/{id}(id=${c.id})}"
+                   onclick="return confirm('Are you sure you want to delete this claim?');"
+                   class="action-link delete-btn">Delete</a>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- If no claims -->
+  <div th:if="${claim.size() == 0}" style="text-align: center;">
+    <h2 style="color: #fff;">📭 No Claim Reports Yet</h2>
+    <p style="color: #ccc;">There are currently no claim reports submitted to the system.</p>
+  </div>
+
+</div>
+
+
+</body>
+</html>

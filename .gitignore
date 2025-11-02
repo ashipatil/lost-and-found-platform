@@ -1,0 +1,26 @@
+# Ignore IDE folders
+.idea/
+.vscode/
+*.iml
+
+# Ignore build folders
+target/
+build/
+
+# Maven wrapper
+.mvn/
+mvnw
+mvnw.cmd
+
+# Ignore logs
+*.log
+
+# OS junk files
+.DS_Store
+Thumbs.db
+
+# Ignore credentials
+.env
+application-local.properties
+*.jks
+*.keystore

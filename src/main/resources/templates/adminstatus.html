@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>All Items Status</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      --edit-color: #4facfe;
+      --edit-hover: #00f2fe;
+      --card-border: rgba(255, 255, 255, 0.1);
+      --text-color: #ffffff;
+      --background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      --glass: rgba(255, 255, 255, 0.08);
+      --glass-hover: rgba(255, 255, 255, 0.15);
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--background);
+      color: var(--text-color);
+      padding: 30px;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background:
+        radial-gradient(circle at 20% 80%, rgba(26, 188, 156, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(0, 198, 255, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(116, 235, 213, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 60% 70%, rgba(255, 65, 108, 0.1) 0%, transparent 50%);
+      z-index: -1;
+    }
+
+    /* 🔍 Search Bar Styles */
+    .search-container {
+      display: flex;
+      justify-content: flex-start;
+      margin-left: 400px;
+    }
+
+    .search-form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 18px;
+      border-radius: 14px;
+    }
+
+    .search-group {
+      display: flex;
+    }
+
+    .search-select {
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: none;
+      background: var(--glass-hover);
+      color: white;
+      font-size: 0.95rem;
+      font-weight: 500;
+      outline: none;
+      appearance: none;
+      transition: background 0.3s ease;
+      min-width: 160px;
+    }
+
+    .search-select:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .search-select option {
+      background-color: #2c3e50;
+      color: white;
+    }
+
+    .search-button {
+      padding: 10px 18px;
+      border-radius: 10px;
+      border: none;
+      background: var(--success);
+      color: white;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .search-button:hover {
+      background: #00f2fe;
+      color: black;
+      transform: scale(1.03);
+    }
+
+    .reset-button {
+      padding: 10px 16px;
+      border-radius: 10px;
+      background: transparent;
+      border: 1px solid var(--card-border);
+      color: #ffffffcc;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+
+    .reset-button:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    /* Header and Table Styles */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--glass);
+      padding: 20px 32px;
+      border-radius: 16px;
+      margin-bottom: 32px;
+      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--card-border);
+    }
+
+    .header-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--text-color);
+    }
+
+    .home-icon {
+      height: 60px;
+      width: 90px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .home-icon:hover {
+      transform: scale(1.06);
+    }
+
+    .table-container {
+      background: var(--glass);
+      border-radius: 16px;
+      padding: 24px;
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--card-border);
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      color: white;
+    }
+
+    th, td {
+      padding: 14px 18px;
+      text-align: left;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    th {
+      background: var(--glass-hover);
+      font-weight: 600;
+    }
+
+    tr:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .status-pill {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .claimed {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .not-claimed {
+      background-color: #ffc107;
+      color: black;
+    }
+
+    .pending {
+      background-color: #17a2b8;
+      color: white;
+    }
+
+    .action-btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      color: white;
+      background: linear-gradient(135deg, #232526, #414345);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .view-btn:hover {
+      background: green;
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+
+ 
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-title">All Items Status</div>
+    
+     <!-- 🔍 Search Bar at the Top -->
+  <div class="search-container">
+    <form th:action="@{/dash/searchstatus}" method="get" class="search-form">
+      <div class="search-group">
+        <select name="category" th:value="${param.category}" class="search-select">
+          <option value="" disabled th:if="${param.category == null}" selected>🗂 Select Category</option>
+          <option value="electronics" th:selected="${param.category == 'electronics'}">💻 Electronics</option>
+          <option value="clothing" th:selected="${param.category == 'clothing'}">👕 Clothing</option>
+          <option value="accessories" th:selected="${param.category == 'accessories'}">🎒 Accessories</option>
+          <option value="documents" th:selected="${param.category == 'documents'}">📄 Documents</option>
+          <option value="others" th:selected="${param.category == 'others'}">📦 Others</option>
+        </select>
+      </div>
+
+      <div class="search-group">
+        <select name="reportType" th:value="${param.reportType}" class="search-select">
+          <option value="">📋 Select Report Type</option>
+          <option value="Lost" th:selected="${param.reportType == 'Lost'}">❌ Lost</option>
+          <option value="Found" th:selected="${param.reportType == 'Found'}">✅ Found</option>
+        </select>
+      </div>
+
+      <div class="search-group">
+        <button type="submit" class="search-button">🔍 Search</button>
+      </div>
+
+      <div class="search-group" th:if="${param.category != null or param.reportType != null}">
+  <a th:href="@{/dash/adminstatusmanage}" class="reset-button">⟳ Reset</a>
+</div>
+    </form>
+  </div>
+  
+    <a th:href="@{/dash/admindashboard}">
+      <img src="https://preview.redd.it/5lzdqhgbc3d81.png?width=1080&crop=smart&auto=webp&s=ba3add550b768382e39f834649c97d8aee87fda9"
+           alt="Home" class="home-icon">
+    </a>
+  </div>
+	
+  <!-- Table Section -->
+  <div class="table-container">
+    <div th:if="${#lists.isEmpty(allItems)}" style="text-align: center; padding: 20px; font-size: 1.2rem; color: #ccc;">
+      No items found in this category.
+    </div>
+
+    <table th:if="${not #lists.isEmpty(allItems)}">
+      <thead>
+        <tr>
+          <th>Item Name</th>
+          <th>Reported By</th>
+          <th>Report Type</th>
+          <th>Category</th>
+          <th>Date</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="item : ${allItems}">
+          <td th:text="${item.itemName}"></td>
+          <td th:text="${item.user.name}"></td>
+          <td th:text="${item.reportType}"></td>
+          <td th:text="${item.category}"></td>
+          <td th:text="${item.dateLostFound}"></td>
+          <td>
+            <span class="status-pill"
+                  th:classappend="${item.itemstatus} == 'Claimed' ? 'claimed' :
+                                  (item.itemstatus == 'Pending' ? 'pending' : 'not-claimed')"
+                  th:text="${item.itemstatus}"></span>
+          </td>
+          <td>
+            <a th:href="@{/dash/adminviewdetails/{id}(id=${item.id})}" class="action-btn view-btn">View Details</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</body>
+</html>

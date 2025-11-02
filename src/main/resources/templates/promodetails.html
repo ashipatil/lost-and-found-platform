@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Promotional Lost Item Submission</title>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    :root {
+      --success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      --edit-color: #4facfe;
+      --edit-hover: #00f2fe;
+      --card-border: rgba(255, 255, 255, 0.1);
+      --text-color: #ffffff;
+      --background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      --glass: rgba(255, 255, 255, 0.08);
+      --glass-hover: rgba(255, 255, 255, 0.15);
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--background);
+      color: var(--text-color);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .page-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px;
+      width: 100%;
+      max-width: 800px;
+    }
+
+    .glass-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      border-radius: 16px;
+      padding: 20px 32px;
+      margin-bottom: 32px;
+      width: 171%;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--card-border);
+    }
+
+    .glass-title {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: var(--text-color);
+    }
+
+    .glass-logo {
+      height: 60px;
+      width: 90px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .glass-logo:hover {
+      transform: scale(1.06);
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 2rem;
+      width: 100%;
+      max-width: 600px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .report-form h1 {
+      text-align: center;
+      margin-bottom: 0.5rem;
+      color: #ffb84d;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #ccc;
+      margin-bottom: 1.5rem;
+    }
+
+    .section {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin: 0.5rem 0 0.2rem;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="date"],
+    textarea,
+    select {
+      width: calc(100% - 28px);
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: none;
+      font-size: 1rem;
+      margin-top: 4px;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: #ccc;
+    }
+
+    input[type="file"] {
+      width: calc(100% - 20px);
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px dashed #999;
+      border-radius: 10px;
+      cursor: pointer;
+      box-sizing: border-box;
+    }
+
+    .upload-note {
+      font-size: 0.85rem;
+      color: #ccc;
+      margin-top: 5px;
+    }
+
+    .required {
+      color: #ff4d4d;
+      font-weight: bold;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #ffb84d;
+      color: #000;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      margin-top: 1rem;
+    }
+
+    button:hover {
+      background-color: #ffaa00;
+    }
+
+    .footer-note {
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      text-align: center;
+      color: #ccc;
+    }
+
+    .custom-select {
+      position: relative;
+    }
+
+    .custom-select select {
+      appearance: none;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      padding: 12px;
+      color: white;
+      font-size: 1rem;
+      border-radius: 10px;
+      width: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7'%3E%3Cpath fill='white' d='M6 7L0 0h12z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 12px 7px;
+      box-sizing: border-box;
+    }
+
+    .custom-select select option {
+      color: black;
+      background-color: white;
+    }
+
+    .custom-select select:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+    }
+
+    .image-preview {
+      margin-top: 1rem;
+      text-align: center;
+    }
+
+    .image-preview img {
+      max-width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .error {
+      color: #ff4d4d;
+      font-size: 0.85rem;
+      margin-top: 0.2rem;
+    }
+  </style>
+</head>
+<body>
+<main class="page-wrapper">
+
+  <!-- Header -->
+  <div class="glass-header">
+    <div class="glass-title">Promotional Form</div>
+    <a th:href="@{/dash/userdashboard}">
+      <img src="https://preview.redd.it/5lzdqhgbc3d81.png?width=1080&crop=smart&auto=webp&s=ba3add550b768382e39f834649c97d8aee87fda9"
+           alt="Lost and Found Logo" class="glass-logo">
+    </a>
+  </div>
+
+  <!-- Form Container -->
+  <div class="container">
+    <form class="report-form" id="promotionForm" action="#" method="post" enctype="multipart/form-data">
+      <h1>Promote Lost Item</h1>
+      <p class="subtitle">Boost visibility for your lost item</p>
+
+      <div class="section">
+        <label for="itemName">Item Name <span class="required">*</span></label>
+        <input type="text" id="itemName" name="itemName" required>
+
+        <label for="description">Detailed Description <span class="required">*</span></label>
+        <textarea id="description" name="description" required></textarea>
+
+        <label for="category">Category <span class="required">*</span></label>
+        <div class="custom-select">
+          <select id="category" name="category" required>
+            <option value="" disabled selected>-- Select Category --</option>
+            <option value="electronics">Electronics</option>
+            <option value="clothing">Clothing</option>
+            <option value="accessories">Accessories</option>
+            <option value="documents">Documents</option>
+            <option value="others">Others</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="section">
+        <label for="dateLostFound">Date Lost <span class="required">*</span></label>
+        <input type="date" id="dateLostFound" name="dateLostFound" required>
+
+        <label for="location">Specific Location <span class="required">*</span></label>
+        <input type="text" id="location" name="location" required>
+      </div>
+
+      <div class="section">
+        <label for="itemPhotoPath">Upload Photo</label>
+        <input type="file" id="itemPhotoPath" name="itemPhotoPath" accept="image/*">
+        <p class="upload-note">Include a clear image to boost visibility</p>
+        <div class="image-preview" id="imagePreview"></div>
+      </div>
+
+      <div class="section">
+        <label>Contact Information <span class="required">*</span></label>
+        <input type="email" id="contactEmail" name="contactEmail" required>
+        <input type="tel" id="contactPhone" name="contactPhone" placeholder="e.g. 98562148" pattern="[0-9]{8,10}">
+        <div id="phoneError" class="error" style="display:none;">Phone number must be 8–10 digits.</div>
+      </div>
+
+      <button type="submit">Submit Promotion</button>
+      <p class="footer-note">Your submission will be promoted to increase the chances of recovery.</p>
+    </form>
+  </div>
+
+</main>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.getElementById("promotionForm");
+  const phoneInput = document.getElementById("contactPhone");
+  const phoneError = document.getElementById("phoneError");
+  const imageInput = document.getElementById("itemPhotoPath");
+  const imagePreview = document.getElementById("imagePreview");
+
+  imageInput.addEventListener("change", function () {
+    const file = this.files[0];
+    if (file && file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        imagePreview.innerHTML = `<img src="${e.target.result}" alt="Preview Image">`;
+      };
+      reader.readAsDataURL(file);
+    } else {
+      imagePreview.innerHTML = "";
+    }
+  });
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const phoneValue = phoneInput.value.trim();
+    if (phoneValue && !/^\d{8,10}$/.test(phoneValue)) {
+      phoneError.style.display = "block";
+      return;
+    } else {
+      phoneError.style.display = "none";
+    }
+
+    const formData = new FormData(form);
+
+    fetch('/dash/submit-promo', {
+      method: 'POST',
+      body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === "unauthorized") {
+        window.location.href = '/landing/login';
+      } else {
+        const promoId = data.id;
+        Swal.fire({
+          title: 'Promotion Submitted!',
+          text: 'Your item will now be promoted.',
+          icon: 'success',
+          confirmButtonText: 'View Promo',
+          confirmButtonColor: '#4facfe',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = `/dash/promoposter/${promoId}`;
+          }
+        });
+      }
+    })
+    .catch(err => {
+      console.error('Error:', err);
+      Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+    });
+  });
+});
+</script>
+
+</body>
+</html>

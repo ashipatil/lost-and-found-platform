@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Item Claim Form</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 670px;
+            margin: 15px auto;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .container h1{
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 35px;
+            background: white;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 3px;
+            color: #ffffff;
+        }
+
+        .required {
+            color: #ff6b6b;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="date"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            font-size: 16px;
+            color: #ffffff;
+            backdrop-filter: blur(10px);
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: rgba(79, 172, 254, 0.5);
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.2);
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        select option {
+            background: #2c5364;
+            color: #ffffff;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        input[type="checkbox"] {
+            margin-top: 3px;
+        }
+
+        .submit-btn {
+            background: #ffb84d;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            font-weight: bold;
+            box-shadow: 0 6px 20px rgba(79, 172, 254, 0.3);
+        }
+
+        .submit-btn:hover {
+            background: #04a004;
+        }
+
+        .section {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section h2 {
+            color: #ffb84d;
+            margin-bottom: 15px;
+            font-size: 25px;
+        }
+
+        .checkbox-group label {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: normal;
+        }
+
+        input[type="checkbox"] {
+            accent-color: #4facfe;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Item Claim Form</h1>
+        
+        <form th:action="@{/dash/submit-claim}" th:object="${claim}" method="POST" id="claimForm">
+            
+            <!-- Personal Information -->
+            <div class="section">
+                <h2>Personal Information</h2>
+                
+                <div class="form-group">
+                    <label for="name">Full Name <span class="required">*</span></label>
+                    <input type="text" id="name" name="name" th:field="*{name}" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address <span class="required">*</span></label>
+                    <input type="email" id="email" name="email" th:field="*{email}"readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Phone Number <span class="required">*</span></label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+            </div>
+
+            <!-- Item Information -->
+            <div class="section">
+                <h2>Item Information</h2>
+                
+                <div class="form-group">
+                    <label for="itemName">Item Name <span class="required">*</span></label>
+                    <input type="text" id="itemName" th:field="*{itemName}" name="itemName"  readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label for="category">Category <span class="required">*</span></label>
+                    <input type="text" id="category" th:field="*{category}" name="category"  readonly>
+                       
+                   
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">Item Description <span class="required">*</span></label>
+                    <textarea id="description" th:field="*{description}" name="description" readonly></textarea>
+                </div>
+            </div>
+
+            <!-- Loss Information -->
+            <div class="section">
+                <h2>Lost Information</h2>
+                
+                <div class="form-group">
+                    <label for="dateLost">Date Lost <span class="required">*</span></label>
+                    <input type="date" id="dateLost" name="dateLost" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="location">Location Where Lost <span class="required">*</span></label>
+                    <input type="text" id="location" name="location" placeholder="e.g., Central Park, Main Street Bus Stop" required>
+                </div>
+
+            </div>
+
+            <!-- Verification -->
+            <div class="section">
+                <h2>Verification</h2>
+                
+                <div class="form-group">
+                    <label for="proof">Proof of Ownership <span class="required">*</span></label>
+                    <textarea id="proof" name="proof" placeholder="Describe any proof you have (receipt, photos, serial number, etc.)"></textarea>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="declaration" name="declaration" required>
+                    <label for="declaration">I declare that all information provided is true and accurate.</label>
+                </div>
+            </div>
+			<input type="hidden" th:field="*{item.id}" />
+
+ <!-- Pass the itemId here -->
+            <button type="submit" class="submit-btn">Submit Claim</button>
+            
+        </form>
+    </div>
+    <script>
+document.getElementById("claimForm").addEventListener("submit", function(event) {
+  event.preventDefault(); // Prevent immediate form submission
+
+  const form = this;
+
+  // Show SweetAlert
+  Swal.fire({
+    title: 'Claim Reported!',
+    text: 'Your claim has been reported successfully.',
+    icon: 'success',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: () => {
+      Swal.showLoading();
+    },
+    willClose: () => {
+      form.submit(); // Submit the form after alert closes
+    }
+  });
+});
+</script>
+
+</body>
+</html>
