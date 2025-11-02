@@ -29,3 +29,18 @@ A secure and user-friendly Lost & Found management platform with item reporting,
 1. Clone the repo:
    ```bash
    git clone https://github.com/ashipatil/lost-and-found-platform.git
+
+2. Open it in your IDE (IntelliJ, Eclipse, VS Code)
+
+3. Update MySQL credentials in application.properties:
+
+   spring.datasource.url=jdbc:mysql://localhost:3306/lostfound_db
+   spring.datasource.username=root
+   spring.datasource.password=yourpassword
+
+4. Run the application:
+
+   mvn spring-boot:run
+
+
+5. Open http://localhost:8080 in browser
